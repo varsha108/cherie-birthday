@@ -120,17 +120,17 @@ body.open .instruction { animation: pulse 2.4s ease-in-out 2.4s infinite; }
     transition: transform 1.2s ease;
 }
 
-/* Fan Cards Wrapper */
+/* Stacked Cards */
 .cards-wrapper {
     position: absolute;
     inset: 0;
     z-index: 1; 
 }
-.fan-card {
+.stack-card {
     position: absolute;
-    left: 8%; right: 8%; bottom: 6%; top: 6%;
+    left: 4%; right: 4%; bottom: 6%; top: 6%;
     background: #faf6ee;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.25);
+    box-shadow: 0 -4px 18px rgba(0,0,0,0.15);
     border-radius: 6px;
     padding: 0.6rem;
     display: flex;
@@ -138,27 +138,29 @@ body.open .instruction { animation: pulse 2.4s ease-in-out 2.4s infinite; }
     align-items: center;
     justify-content: center;
     transform-origin: bottom center;
-    transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* Card 1: Picture (Left) */
-.card-pic { z-index: 3; justify-content: space-between; }
+/* Specific Card Layouts */
+.card-pic { justify-content: flex-start; }
 .card-pic img {
-    width: 100%; height: 78%;
+    width: 100%; height: 72%;
     object-fit: cover; border-radius: 4px; border: 1px solid #eae1d3;
+    pointer-events: none;
 }
 .card-pic h2 {
     font-family: var(--mono); color: var(--accent-deep);
-    margin: 0; font-size: clamp(1.1rem, 4vw, 1.4rem); text-align: center;
+    margin: 0.5rem 0 0.1rem; font-size: clamp(1.1rem, 4vw, 1.4rem); text-align: center;
 }
+.tap-hint { margin: 0; font-size: 0.7rem; color: #a4b0a8; animation: pulse 2s infinite;}
 
-/* Card 2: Song (Center) */
-.card-song { z-index: 2; justify-content: flex-start; }
+.card-song { justify-content: flex-start; }
 .card-song h3 { font-family: var(--mono); color: var(--accent-deep); margin: 1rem 0 1.5rem; font-size: 1.2rem;}
-.card-song iframe { border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+.card-song iframe { border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); pointer-events: auto;}
 
-/* Card 3: Letter (Right) */
-.card-letter { z-index: 1; justify-content: flex-start; }
+.card-letter { justify-content: flex-start; }
 .wax-badge {
     width: 3.5rem; height: 3.5rem; border-radius: 50%;
     background: var(--accent-deep); color: #fff;
@@ -170,7 +172,7 @@ body.open .instruction { animation: pulse 2.4s ease-in-out 2.4s infinite; }
     background: var(--accent-deep); color: #fff; border: none;
     padding: 0.6rem 1.2rem; border-radius: 20px;
     font-family: var(--mono); font-size: 0.9rem;
-    cursor: pointer; width: 90%;
+    cursor: pointer; width: 90%; pointer-events: auto;
     box-shadow: 0 2px 8px rgba(93, 124, 103, 0.3);
     transition: background 0.2s, transform 0.1s; margin-bottom: 0.5rem;
 }
@@ -182,7 +184,7 @@ body.open .instruction { animation: pulse 2.4s ease-in-out 2.4s infinite; }
     position: absolute; inset: 0;
     background: #f8e6d8;
     clip-path: polygon(0 0, 50% 50%, 100% 0, 100% 100%, 0 100%);
-    z-index: 4;
+    z-index: 4; pointer-events: none;
 }
 .envelope-front::before {
     content: ''; position: absolute; inset: 0;
@@ -208,7 +210,7 @@ body.open .instruction { animation: pulse 2.4s ease-in-out 2.4s infinite; }
     text-align: center;
     font-size: clamp(0.9rem, 4vw, 1.15rem);
     letter-spacing: 0.08em;
-    color: #2f3a33; z-index: 6;
+    color: #2f3a33; z-index: 6; pointer-events: none;
 }
 .address small {
     display: block; margin-bottom: 0.4rem;
@@ -243,20 +245,28 @@ body.open .instruction { animation: pulse 2.4s ease-in-out 2.4s infinite; }
 #cover.opening .seal { opacity: 0; pointer-events: none; transition: opacity 0.3s; animation: none; }
 #cover.opening .cover-hint { opacity: 0; transition: opacity 0.3s; }
 
-#cover.fanning .envelope {
+/* The Popped Stack */
+#cover.popped .envelope {
     transform: translateY(22%);
 }
-#cover.fanning .card-pic { 
-    transform: translateY(-62%) translateX(-38%) rotate(-20deg); 
-    transition-delay: 0.1s; 
+#cover.popped .pos-1 { 
+    transform: translateY(-75%) scale(1); 
+    opacity: 1; z-index: 3; 
 }
-#cover.fanning .card-song { 
-    transform: translateY(-88%) translateX(0) rotate(0deg); 
-    transition-delay: 0.2s; 
+#cover.popped .pos-2 { 
+    transform: translateY(-84%) scale(0.95); 
+    opacity: 0.85; z-index: 2; 
 }
-#cover.fanning .card-letter { 
-    transform: translateY(-62%) translateX(38%) rotate(20deg); 
-    transition-delay: 0.3s; 
+#cover.popped .pos-3 { 
+    transform: translateY(-93%) scale(0.90); 
+    opacity: 0.5; z-index: 1; 
+}
+
+/* Card Shuffle Animation */
+#cover.popped .stack-card.cycling {
+    transform: translateY(-125%) scale(1.05) rotate(4deg);
+    opacity: 0;
+    z-index: 4;
 }
 
 /* ---------- Memory modal ---------- */
@@ -333,25 +343,27 @@ body.open .instruction { animation: pulse 2.4s ease-in-out 2.4s infinite; }
 <div id="cover">
     <div class="envelope">
         
-        <!-- The Fan Cards -->
+        <!-- The Stacked Cards -->
         <div class="cards-wrapper">
-            <!-- Card 3: Letter (Right) -->
-            <div class="fan-card card-letter">
+            <!-- Card 3: Letter (Bottom of stack initially) -->
+            <div class="stack-card pos-3" id="card-letter">
                 <div class="wax-badge">&#9825;</div>
                 <h3>A letter<br>for you</h3>
                 <button id="read-poem-btn">Read it</button>
             </div>
             
-            <!-- Card 2: Song (Center) -->
-            <div class="fan-card card-song">
+            <!-- Card 2: Song (Middle of stack) -->
+            <div class="stack-card pos-2" id="card-song">
                 <h3>Our Track</h3>
                 <iframe src="https://open.spotify.com/embed/track/6uJwPeBGb3swi85TSr9iIz?utm_source=generator&theme=0&si=009bc2033a2043bb" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                <p class="tap-hint">(Tap card to see next)</p>
             </div>
 
-            <!-- Card 1: Picture (Left) -->
-            <div class="fan-card card-pic">
+            <!-- Card 1: Picture (Top of stack initially) -->
+            <div class="stack-card pos-1" id="card-pic">
                 <img src="🥰🫀.jpg" alt="Happy Birthday!">
                 <h2>Happy birthday!</h2>
+                <p class="tap-hint">(Tap card to see next)</p>
             </div>
         </div>
         
@@ -461,27 +473,71 @@ function animate() {
 }
 window.onload = animate;
 
-// --- INTERACTIONS ---
+// --- INTERACTIONS & CARD LOGIC ---
 const modal = document.getElementById('memory-modal');
 const cover = document.getElementById('cover');
 let opened = false;
+let isCycling = false;
 
+// Card ordering logic
+let cardOrder = ['card-pic', 'card-song', 'card-letter'];
+
+function updateCards() {
+    cardOrder.forEach((id, index) => {
+        const card = document.getElementById(id);
+        card.classList.remove('pos-1', 'pos-2', 'pos-3');
+        card.classList.add(`pos-${index + 1}`);
+    });
+}
+
+// 1. Envelope opens and cards pop up
 document.getElementById('seal').addEventListener('click', () => {
     if (opened) return;
     opened = true;
     
     cover.classList.add('opening');
     setTimeout(() => {
-        cover.classList.add('fanning');
+        cover.classList.add('popped');
     }, 700);
 });
 
+// 2. Cycle cards when tapped
+document.querySelectorAll('.stack-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+        if (!cover.classList.contains('popped') || isCycling) return;
+        
+        // Don't cycle if they click the poem button or Spotify iframe
+        const tagName = e.target.tagName.toLowerCase();
+        if (tagName === 'button' || tagName === 'iframe') return;
+        
+        // Only cycle if it's the front card
+        if (card.classList.contains('pos-1')) {
+            isCycling = true;
+            
+            // Trigger slide out/up animation
+            card.classList.add('cycling');
+            
+            setTimeout(() => {
+                // Shift order array: push first element to the end
+                cardOrder.push(cardOrder.shift());
+                updateCards();
+                
+                // Remove cycling class so it transitions back into pos-3
+                card.classList.remove('cycling');
+                isCycling = false;
+            }, 400); // Wait for the upward slide to finish
+        }
+    });
+});
+
+// 3. Hide envelope to reveal the poem in background
 document.getElementById('read-poem-btn').addEventListener('click', () => {
     cover.classList.add('gone');
     document.body.classList.add('open');
     document.body.classList.remove('locked');
 });
 
+// 4. Modals and beta bursts
 document.addEventListener('pointerdown', (e) => {
     if (!opened) return;
     const target = e.target;
@@ -490,6 +546,7 @@ document.addEventListener('pointerdown', (e) => {
     if (target.closest('#memories-trigger')) { modal.classList.add('active'); return; }
     if (target.closest('#close-modal') || (inModal && target === modal)) { modal.classList.remove('active'); return; }
     
+    // Only burst if not clicking the envelope area or modal
     if (!inModal && !target.closest('#cover')) {
         betaBursts.push({ x: e.clientX, y: e.clientY, age: 0, maxAge: 90 });
     }
